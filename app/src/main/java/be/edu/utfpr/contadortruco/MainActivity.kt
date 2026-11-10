@@ -1,5 +1,6 @@
 package be.edu.utfpr.contadortruco
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -58,10 +59,25 @@ class MainActivity : AppCompatActivity() {
         binding.btnSum9player2.setOnClickListener { adicionarPontos(2, 9) }
         binding.btnSum12player2.setOnClickListener { adicionarPontos(2, 12) }
 
+        binding.btnHistJogadas.setOnClickListener {
+            abrirHistorico()
+        }
+
         binding.btnZerarHistorico.setOnClickListener {
             zerarHistorico()
         }
+    }
 
+    private fun abrirHistorico() {
+        val intent = Intent(this, HistoricoActivity::class.java).apply {
+            putExtra("EXTRA_NOME_JOGADOR_1", binding.tvNome1.text.toString())
+            putExtra("EXTRA_NOME_JOGADOR_2", binding.tvNome2.text.toString())
+            putExtra("EXTRA_PONTOS_JOGADOR_1", pontosJogador1)
+            putExtra("EXTRA_PONTOS_JOGADOR_2", pontosJogador2)
+            putExtra("EXTRA_VITORIAS_JOGADOR_1", vitoriasJogador1)
+            putExtra("EXTRA_VITORIAS_JOGADOR_2", vitoriasJogador2)
+        }
+        startActivity(intent)
     }
 
     private fun adicionarPontos(jogador: Int, pontos: Int) {
