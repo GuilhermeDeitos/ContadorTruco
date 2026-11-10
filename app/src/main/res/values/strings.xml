@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">ContadorTruco</string>
+    <string name="player1_label">Jogador 1:</string>
+    <string name="player2_label">Jogador 2:</string>
+    <string name="btn_inf_nomes">Inf. Nomes</string>
+    <string name="btn_zerar_historico">Zerar Histórico</string>
+    <string name="btn_hist_jogadas">Hist. de Jogadas</string>
+    <string name="player_won">%1$s venceu!</string>
+    <string name="history_reset">Histórico reiniciado!</string>
+    <string name="plus_1">+1</string>
+    <string name="plus_3">+3</string>
+    <string name="plus_6">+6</string>
+    <string name="plus_9">+9</string>
+    <string name="plus_12">+12</string>
 </resources>
