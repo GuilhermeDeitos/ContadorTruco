@@ -4,8 +4,6 @@
     <string name="goal_chip">Até %1$d pontos</string>
     <string name="player1_default_name">Jogador 1</string>
     <string name="player2_default_name">Jogador 2</string>
-    <string name="player1_label">Jogador 1:</string>
-    <string name="player2_label">Jogador 2:</string>
     <string name="btn_inf_nomes">Nomes</string>
     <string name="btn_zerar_historico">Zerar</string>
     <string name="btn_hist_jogadas">Histórico</string>
@@ -17,13 +15,19 @@
     <string name="plus_9">+9</string>
     <string name="plus_12">+12</string>
     <string name="btn_confirmar">Confirmar</string>
-    <string name="player1_hint">Nome do Jogador 1</string>
-    <string name="player2_hint">Nome do Jogador 2</string>
-    <string name="player_name_format">%1$s:</string>
     <string name="points_one">%1$d ponto</string>
     <string name="points_many">%1$d pontos</string>
     <string name="wins_one">%1$d vitória</string>
     <string name="wins_many">%1$d vitórias</string>
     <string name="cd_player_score">%1$s: %2$s</string>
     <string name="cd_add_points">Adicionar %1$s para %2$s</string>
+    <string name="cd_back">Voltar</string>
+    <string name="title_nomes">Nomes dos jogadores</string>
+    <string name="names_helper">Campos em branco mantêm o nome atual.</string>
+    <string name="title_historico">Histórico</string>
+    <string name="history_section">Vitórias</string>
+    <string name="matches_one">%1$d partida</string>
+    <string name="matches_many">%1$d partidas</string>
+    <string name="history_leading">Na frente</string>
+    <string name="history_empty">Nenhuma partida concluída ainda. Chegue a %1$d pontos para registrar a primeira vitória.</string>
 </resources>
