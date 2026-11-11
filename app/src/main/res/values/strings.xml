@@ -30,4 +30,11 @@
     <string name="matches_many">%1$d partidas</string>
     <string name="history_leading">Na frente</string>
     <string name="history_empty">Nenhuma partida concluída ainda. Chegue a %1$d pontos para registrar a primeira vitória.</string>
+    <string name="cd_undo">Desfazer última pontuação</string>
+    <string name="undo">Desfazer</string>
+    <string name="new_match">Nova partida</string>
+    <string name="final_score">%1$s %2$d × %3$d %4$s</string>
+    <string name="reset_title">Zerar histórico?</string>
+    <string name="reset_message">O placar, as vitórias e os nomes voltarão ao início. Esta ação não pode ser desfeita.</string>
+    <string name="cancel">Cancelar</string>
 </resources>
