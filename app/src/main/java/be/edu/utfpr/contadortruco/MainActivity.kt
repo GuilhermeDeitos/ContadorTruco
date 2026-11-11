@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,6 +19,23 @@ class MainActivity : AppCompatActivity() {
 
     private var vitoriasJogador1 = 0
     private var vitoriasJogador2 = 0
+
+    private val nomesLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data ?: return@registerForActivityResult
+            val nome1 = data.getStringExtra("EXTRA_NOME_JOGADOR_1")
+            val nome2 = data.getStringExtra("EXTRA_NOME_JOGADOR_2")
+
+            if (!nome1.isNullOrBlank()) {
+                binding.tvNome1.text = getString(R.string.player_name_format, nome1)
+            }
+            if (!nome2.isNullOrBlank()) {
+                binding.tvNome2.text = getString(R.string.player_name_format, nome2)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +81,10 @@ class MainActivity : AppCompatActivity() {
             abrirHistorico()
         }
 
+        binding.btnInfNomes.setOnClickListener {
+            abrirInformarNomes()
+        }
+
         binding.btnZerarHistorico.setOnClickListener {
             zerarHistorico()
         }
@@ -78,6 +100,17 @@ class MainActivity : AppCompatActivity() {
             putExtra("EXTRA_VITORIAS_JOGADOR_2", vitoriasJogador2)
         }
         startActivity(intent)
+    }
+
+    private fun abrirInformarNomes() {
+        val currentNome1 = binding.tvNome1.text.toString().trim().removeSuffix(":")
+        val currentNome2 = binding.tvNome2.text.toString().trim().removeSuffix(":")
+
+        val intent = Intent(this, NomesActivity::class.java).apply {
+            putExtra("EXTRA_NOME_JOGADOR_1", currentNome1)
+            putExtra("EXTRA_NOME_JOGADOR_2", currentNome2)
+        }
+        nomesLauncher.launch(intent)
     }
 
     private fun adicionarPontos(jogador: Int, pontos: Int) {
