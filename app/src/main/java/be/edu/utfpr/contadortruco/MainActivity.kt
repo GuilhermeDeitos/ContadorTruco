@@ -4,43 +4,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import be.edu.utfpr.contadortruco.databinding.ActivityMainBinding
 import be.edu.utfpr.contadortruco.databinding.ItemPlayerBinding
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var storage: PartidaStorage
+    private lateinit var partida: Partida
 
-    private var pontosJogador1 = 0
-    private var pontosJogador2 = 0
-
-    private var vitoriasJogador1 = 0
-    private var vitoriasJogador2 = 0
-
-    private var nomeJogador1 = ""
-    private var nomeJogador2 = ""
+    private var dialogoVitoria: AlertDialog? = null
 
     private val nomesLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             val data = result.data ?: return@registerForActivityResult
-            val novoNome1 = data.getStringExtra(Constants.EXTRA_NOME_JOGADOR_1)
-            val novoNome2 = data.getStringExtra(Constants.EXTRA_NOME_JOGADOR_2)
-
-            if (!novoNome1.isNullOrBlank()) {
-                nomeJogador1 = novoNome1
-            }
-            if (!novoNome2.isNullOrBlank()) {
-                nomeJogador2 = novoNome2
-            }
+            atualizarNome(0, data.getStringExtra(Constants.EXTRA_NOME_JOGADOR_1))
+            atualizarNome(1, data.getStringExtra(Constants.EXTRA_NOME_JOGADOR_2))
             atualizarPlacares()
         }
     }
@@ -68,31 +58,28 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        if (savedInstanceState != null) {
-            pontosJogador1 = savedInstanceState.getInt(KEY_PONTOS_1, 0)
-            pontosJogador2 = savedInstanceState.getInt(KEY_PONTOS_2, 0)
-            vitoriasJogador1 = savedInstanceState.getInt(KEY_VITORIAS_1, 0)
-            vitoriasJogador2 = savedInstanceState.getInt(KEY_VITORIAS_2, 0)
-            nomeJogador1 = savedInstanceState.getString(KEY_NOME_1) ?: getString(R.string.player1_default_name)
-            nomeJogador2 = savedInstanceState.getString(KEY_NOME_2) ?: getString(R.string.player2_default_name)
-        } else {
-            nomeJogador1 = getString(R.string.player1_default_name)
-            nomeJogador2 = getString(R.string.player2_default_name)
-        }
+        // A partida vem do armazenamento: sobrevive a rotação e a fechar o app.
+        storage = PartidaStorage(this)
+        partida = storage.carregar()
 
         binding.tvMeta.text = getString(R.string.goal_chip, Constants.PONTOS_PARA_VENCER)
         configurarBotoes()
         atualizarPlacares()
+
+        // Se o app foi fechado com a partida já decidida, o diálogo volta.
+        if (partida.encerrada) {
+            mostrarDialogoVitoria()
+        }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(KEY_PONTOS_1, pontosJogador1)
-        outState.putInt(KEY_PONTOS_2, pontosJogador2)
-        outState.putInt(KEY_VITORIAS_1, vitoriasJogador1)
-        outState.putInt(KEY_VITORIAS_2, vitoriasJogador2)
-        outState.putString(KEY_NOME_1, nomeJogador1)
-        outState.putString(KEY_NOME_2, nomeJogador2)
+    override fun onPause() {
+        super.onPause()
+        storage.salvar(partida)
+    }
+
+    override fun onDestroy() {
+        dialogoVitoria?.dismiss()
+        super.onDestroy()
     }
 
     private fun botoesDePontos(card: ItemPlayerBinding) = listOf(
@@ -104,8 +91,13 @@ class MainActivity : AppCompatActivity() {
     )
 
     private fun configurarBotoes() {
-        configurarJogador(binding.player1, 1)
-        configurarJogador(binding.player2, 2)
+        configurarJogador(binding.player1, 0)
+        configurarJogador(binding.player2, 1)
+
+        binding.btnDesfazer.setOnClickListener {
+            partida.desfazer()
+            atualizarPlacares()
+        }
 
         binding.btnHistJogadas.setOnClickListener {
             abrirHistorico()
@@ -116,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnZerarHistorico.setOnClickListener {
-            zerarHistorico()
+            confirmarZerarHistorico()
         }
     }
 
@@ -129,69 +121,90 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun nome(jogador: Int): String =
+        partida.nomes[jogador].ifBlank {
+            getString(if (jogador == 0) R.string.player1_default_name else R.string.player2_default_name)
+        }
+
+    // Nome em branco mantém o atual; igual ao padrão volta a ser "padrão" (segue o idioma).
+    private fun atualizarNome(jogador: Int, novo: String?) {
+        if (novo.isNullOrBlank()) return
+        val padrao = getString(if (jogador == 0) R.string.player1_default_name else R.string.player2_default_name)
+        partida.nomes[jogador] = if (novo == padrao) "" else novo
+    }
+
     private fun abrirHistorico() {
         val intent = Intent(this, HistoricoActivity::class.java).apply {
-            putExtra(Constants.EXTRA_NOME_JOGADOR_1, nomeJogador1)
-            putExtra(Constants.EXTRA_NOME_JOGADOR_2, nomeJogador2)
-            putExtra(Constants.EXTRA_VITORIAS_JOGADOR_1, vitoriasJogador1)
-            putExtra(Constants.EXTRA_VITORIAS_JOGADOR_2, vitoriasJogador2)
+            putExtra(Constants.EXTRA_NOME_JOGADOR_1, nome(0))
+            putExtra(Constants.EXTRA_NOME_JOGADOR_2, nome(1))
+            putExtra(Constants.EXTRA_VITORIAS_JOGADOR_1, partida.vitorias[0])
+            putExtra(Constants.EXTRA_VITORIAS_JOGADOR_2, partida.vitorias[1])
         }
         startActivity(intent)
     }
 
     private fun abrirInformarNomes() {
         val intent = Intent(this, NomesActivity::class.java).apply {
-            putExtra(Constants.EXTRA_NOME_JOGADOR_1, nomeJogador1)
-            putExtra(Constants.EXTRA_NOME_JOGADOR_2, nomeJogador2)
+            putExtra(Constants.EXTRA_NOME_JOGADOR_1, nome(0))
+            putExtra(Constants.EXTRA_NOME_JOGADOR_2, nome(1))
         }
         nomesLauncher.launch(intent)
     }
 
     private fun adicionarPontos(jogador: Int, pontos: Int) {
-        when (jogador) {
-            1 -> pontosJogador1 += pontos
-            2 -> pontosJogador2 += pontos
-            else -> return
-        }
-
-        verificarVencedor()
+        partida.adicionar(jogador, pontos)
         atualizarPlacares()
-        pulsar(if (jogador == 1) binding.player1.tvPontos else binding.player2.tvPontos)
-    }
+        pulsar(if (jogador == 0) binding.player1.tvPontos else binding.player2.tvPontos)
 
-    private fun verificarVencedor() {
-        when {
-            pontosJogador1 >= Constants.PONTOS_PARA_VENCER -> encerrarPartida(1)
-            pontosJogador2 >= Constants.PONTOS_PARA_VENCER -> encerrarPartida(2)
+        if (partida.encerrada) {
+            mostrarDialogoVitoria()
         }
     }
 
-    private fun encerrarPartida(vencedor: Int) {
-        val nomeVencedor = if (vencedor == 1) {
-            vitoriasJogador1 += 1
-            nomeJogador1
-        } else {
-            vitoriasJogador2 += 1
-            nomeJogador2
-        }
+    private fun mostrarDialogoVitoria() {
+        if (dialogoVitoria?.isShowing == true) return
 
-        Toast.makeText(
-            this,
-            getString(R.string.player_won, nomeVencedor),
-            Toast.LENGTH_SHORT
-        ).show()
-
-        zerarPontos()
+        // Não dá para fechar tocando fora: a decisão é sempre "nova partida" ou "desfazer".
+        dialogoVitoria = MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.player_won, nome(partida.vencedor)))
+            .setMessage(
+                getString(
+                    R.string.final_score,
+                    nome(0), partida.pontos[0], partida.pontos[1], nome(1)
+                )
+            )
+            .setCancelable(false)
+            .setPositiveButton(R.string.new_match) { _, _ ->
+                partida.novaPartida()
+                atualizarPlacares()
+            }
+            .setNegativeButton(R.string.undo) { _, _ ->
+                partida.desfazer()
+                atualizarPlacares()
+            }
+            .show()
     }
 
-    private fun zerarPontos() {
-        pontosJogador1 = 0
-        pontosJogador2 = 0
+    private fun confirmarZerarHistorico() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.reset_title)
+            .setMessage(R.string.reset_message)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.btn_zerar_historico) { _, _ -> zerarHistorico() }
+            .show()
+    }
+
+    private fun zerarHistorico() {
+        partida.zerar()
+        atualizarPlacares()
+        Snackbar.make(binding.root, R.string.history_reset, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun atualizarPlacares() {
-        atualizarCard(binding.player1, nomeJogador1, pontosJogador1, vitoriasJogador1, pontosJogador1 > pontosJogador2)
-        atualizarCard(binding.player2, nomeJogador2, pontosJogador2, vitoriasJogador2, pontosJogador2 > pontosJogador1)
+        val p = partida.pontos
+        atualizarCard(binding.player1, nome(0), p[0], partida.vitorias[0], p[0] > p[1])
+        atualizarCard(binding.player2, nome(1), p[1], partida.vitorias[1], p[1] > p[0])
+        binding.btnDesfazer.isEnabled = partida.podeDesfazer
     }
 
     private fun atualizarCard(
@@ -233,32 +246,5 @@ class MainActivity : AppCompatActivity() {
         v.animate().scaleX(1.05f).scaleY(1.05f).setDuration(90).withEndAction {
             v.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
         }.start()
-    }
-
-    private fun zerarHistorico() {
-        zerarPontos()
-
-        vitoriasJogador1 = 0
-        vitoriasJogador2 = 0
-
-        nomeJogador1 = getString(R.string.player1_default_name)
-        nomeJogador2 = getString(R.string.player2_default_name)
-
-        atualizarPlacares()
-
-        Toast.makeText(
-            this,
-            getString(R.string.history_reset),
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    companion object {
-        private const val KEY_PONTOS_1 = "KEY_PONTOS_1"
-        private const val KEY_PONTOS_2 = "KEY_PONTOS_2"
-        private const val KEY_VITORIAS_1 = "KEY_VITORIAS_1"
-        private const val KEY_VITORIAS_2 = "KEY_VITORIAS_2"
-        private const val KEY_NOME_1 = "KEY_NOME_1"
-        private const val KEY_NOME_2 = "KEY_NOME_2"
     }
 }

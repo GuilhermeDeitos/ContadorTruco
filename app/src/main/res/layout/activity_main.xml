@@ -39,6 +39,16 @@
                 android:paddingVertical="6dp"
                 android:textSize="13sp"
                 tools:text="Até 12 pontos" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_desfazer"
+                style="@style/Widget.Truco.Button.Icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@string/cd_undo"
+                android:tooltipText="@string/cd_undo"
+                app:icon="@drawable/ic_undo" />
         </LinearLayout>
 
         <include
