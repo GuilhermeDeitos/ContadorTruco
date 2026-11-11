@@ -27,10 +27,10 @@ class HistoricoActivity : AppCompatActivity() {
     }
 
     private fun carregarDadosHistorico() {
-        val nome1 = intent.getStringExtra("EXTRA_NOME_JOGADOR_1") ?: getString(R.string.player1_label)
-        val nome2 = intent.getStringExtra("EXTRA_NOME_JOGADOR_2") ?: getString(R.string.player2_label)
-        val vitorias1 = intent.getIntExtra("EXTRA_VITORIAS_JOGADOR_1", 0)
-        val vitorias2 = intent.getIntExtra("EXTRA_VITORIAS_JOGADOR_2", 0)
+        val nome1 = intent.getStringExtra(Constants.EXTRA_NOME_JOGADOR_1) ?: getString(R.string.player1_label)
+        val nome2 = intent.getStringExtra(Constants.EXTRA_NOME_JOGADOR_2) ?: getString(R.string.player2_label)
+        val vitorias1 = intent.getIntExtra(Constants.EXTRA_VITORIAS_JOGADOR_1, 0)
+        val vitorias2 = intent.getIntExtra(Constants.EXTRA_VITORIAS_JOGADOR_2, 0)
 
         binding.tvNomeJogador.text = nome1
         binding.tvNomeJogador2.text = nome2

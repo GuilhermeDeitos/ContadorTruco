@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">ContadorTruco</string>
+    <string name="player1_default_name">Jogador 1</string>
+    <string name="player2_default_name">Jogador 2</string>
     <string name="player1_label">Jogador 1:</string>
     <string name="player2_label">Jogador 2:</string>
     <string name="btn_inf_nomes">Inf. Nomes</string>

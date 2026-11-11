@@ -20,20 +20,24 @@ class MainActivity : AppCompatActivity() {
     private var vitoriasJogador1 = 0
     private var vitoriasJogador2 = 0
 
+    private var nomeJogador1 = ""
+    private var nomeJogador2 = ""
+
     private val nomesLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             val data = result.data ?: return@registerForActivityResult
-            val nome1 = data.getStringExtra("EXTRA_NOME_JOGADOR_1")
-            val nome2 = data.getStringExtra("EXTRA_NOME_JOGADOR_2")
+            val novoNome1 = data.getStringExtra(Constants.EXTRA_NOME_JOGADOR_1)
+            val novoNome2 = data.getStringExtra(Constants.EXTRA_NOME_JOGADOR_2)
 
-            if (!nome1.isNullOrBlank()) {
-                binding.tvNome1.text = getString(R.string.player_name_format, nome1)
+            if (!novoNome1.isNullOrBlank()) {
+                nomeJogador1 = novoNome1
             }
-            if (!nome2.isNullOrBlank()) {
-                binding.tvNome2.text = getString(R.string.player_name_format, nome2)
+            if (!novoNome2.isNullOrBlank()) {
+                nomeJogador2 = novoNome2
             }
+            atualizarExibicaoNomes()
         }
     }
 
@@ -60,8 +64,31 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        if (savedInstanceState != null) {
+            pontosJogador1 = savedInstanceState.getInt(KEY_PONTOS_1, 0)
+            pontosJogador2 = savedInstanceState.getInt(KEY_PONTOS_2, 0)
+            vitoriasJogador1 = savedInstanceState.getInt(KEY_VITORIAS_1, 0)
+            vitoriasJogador2 = savedInstanceState.getInt(KEY_VITORIAS_2, 0)
+            nomeJogador1 = savedInstanceState.getString(KEY_NOME_1) ?: getString(R.string.player1_default_name)
+            nomeJogador2 = savedInstanceState.getString(KEY_NOME_2) ?: getString(R.string.player2_default_name)
+        } else {
+            nomeJogador1 = getString(R.string.player1_default_name)
+            nomeJogador2 = getString(R.string.player2_default_name)
+        }
+
         configurarBotoes()
+        atualizarExibicaoNomes()
         atualizarPlacares()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_PONTOS_1, pontosJogador1)
+        outState.putInt(KEY_PONTOS_2, pontosJogador2)
+        outState.putInt(KEY_VITORIAS_1, vitoriasJogador1)
+        outState.putInt(KEY_VITORIAS_2, vitoriasJogador2)
+        outState.putString(KEY_NOME_1, nomeJogador1)
+        outState.putString(KEY_NOME_2, nomeJogador2)
     }
 
     private fun configurarBotoes() {
@@ -92,23 +119,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun abrirHistorico() {
         val intent = Intent(this, HistoricoActivity::class.java).apply {
-            putExtra("EXTRA_NOME_JOGADOR_1", binding.tvNome1.text.toString())
-            putExtra("EXTRA_NOME_JOGADOR_2", binding.tvNome2.text.toString())
-            putExtra("EXTRA_PONTOS_JOGADOR_1", pontosJogador1)
-            putExtra("EXTRA_PONTOS_JOGADOR_2", pontosJogador2)
-            putExtra("EXTRA_VITORIAS_JOGADOR_1", vitoriasJogador1)
-            putExtra("EXTRA_VITORIAS_JOGADOR_2", vitoriasJogador2)
+            putExtra(Constants.EXTRA_NOME_JOGADOR_1, getString(R.string.player_name_format, nomeJogador1))
+            putExtra(Constants.EXTRA_NOME_JOGADOR_2, getString(R.string.player_name_format, nomeJogador2))
+            putExtra(Constants.EXTRA_VITORIAS_JOGADOR_1, vitoriasJogador1)
+            putExtra(Constants.EXTRA_VITORIAS_JOGADOR_2, vitoriasJogador2)
         }
         startActivity(intent)
     }
 
     private fun abrirInformarNomes() {
-        val currentNome1 = binding.tvNome1.text.toString().trim().removeSuffix(":")
-        val currentNome2 = binding.tvNome2.text.toString().trim().removeSuffix(":")
-
         val intent = Intent(this, NomesActivity::class.java).apply {
-            putExtra("EXTRA_NOME_JOGADOR_1", currentNome1)
-            putExtra("EXTRA_NOME_JOGADOR_2", currentNome2)
+            putExtra(Constants.EXTRA_NOME_JOGADOR_1, nomeJogador1)
+            putExtra(Constants.EXTRA_NOME_JOGADOR_2, nomeJogador2)
         }
         nomesLauncher.launch(intent)
     }
@@ -134,10 +156,10 @@ class MainActivity : AppCompatActivity() {
     private fun encerrarPartida(vencedor: Int) {
         val nomeVencedor = if (vencedor == 1) {
             vitoriasJogador1 += 1
-            binding.tvNome1.text.toString().trim().removeSuffix(":")
+            nomeJogador1
         } else {
             vitoriasJogador2 += 1
-            binding.tvNome2.text.toString().trim().removeSuffix(":")
+            nomeJogador2
         }
 
         Toast.makeText(
@@ -154,6 +176,11 @@ class MainActivity : AppCompatActivity() {
         pontosJogador2 = 0
     }
 
+    private fun atualizarExibicaoNomes() {
+        binding.tvNome1.text = getString(R.string.player_name_format, nomeJogador1)
+        binding.tvNome2.text = getString(R.string.player_name_format, nomeJogador2)
+    }
+
     private fun atualizarPlacares() {
         binding.tvResult.text = pontosJogador1.toString()
         binding.tvResult2.text = pontosJogador2.toString()
@@ -165,9 +192,10 @@ class MainActivity : AppCompatActivity() {
         vitoriasJogador1 = 0
         vitoriasJogador2 = 0
 
-        binding.tvNome1.text = getString(R.string.player1_label)
-        binding.tvNome2.text = getString(R.string.player2_label)
+        nomeJogador1 = getString(R.string.player1_default_name)
+        nomeJogador2 = getString(R.string.player2_default_name)
 
+        atualizarExibicaoNomes()
         atualizarPlacares()
 
         Toast.makeText(
@@ -175,5 +203,14 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.history_reset),
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    companion object {
+        private const val KEY_PONTOS_1 = "KEY_PONTOS_1"
+        private const val KEY_PONTOS_2 = "KEY_PONTOS_2"
+        private const val KEY_VITORIAS_1 = "KEY_VITORIAS_1"
+        private const val KEY_VITORIAS_2 = "KEY_VITORIAS_2"
+        private const val KEY_NOME_1 = "KEY_NOME_1"
+        private const val KEY_NOME_2 = "KEY_NOME_2"
     }
 }

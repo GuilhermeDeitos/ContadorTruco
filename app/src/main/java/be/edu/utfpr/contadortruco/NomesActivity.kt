@@ -29,8 +29,8 @@ class NomesActivity : AppCompatActivity() {
     }
 
     private fun carregarNomesAtuais() {
-        val nome1 = intent.getStringExtra("EXTRA_NOME_JOGADOR_1") ?: ""
-        val nome2 = intent.getStringExtra("EXTRA_NOME_JOGADOR_2") ?: ""
+        val nome1 = intent.getStringExtra(Constants.EXTRA_NOME_JOGADOR_1) ?: ""
+        val nome2 = intent.getStringExtra(Constants.EXTRA_NOME_JOGADOR_2) ?: ""
 
         binding.etNomeJogador1.setText(nome1)
         binding.etNomeJogador2.setText(nome2)
@@ -42,8 +42,8 @@ class NomesActivity : AppCompatActivity() {
             val novoNome2 = binding.etNomeJogador2.text.toString().trim()
 
             val intentResult = Intent().apply {
-                putExtra("EXTRA_NOME_JOGADOR_1", novoNome1)
-                putExtra("EXTRA_NOME_JOGADOR_2", novoNome2)
+                putExtra(Constants.EXTRA_NOME_JOGADOR_1, novoNome1)
+                putExtra(Constants.EXTRA_NOME_JOGADOR_2, novoNome2)
             }
 
             setResult(RESULT_OK, intentResult)
