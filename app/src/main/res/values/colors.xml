@@ -2,4 +2,19 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta do app (claro). A versão escura está em values-night/colors.xml -->
+    <color name="truco_background">#FAFAF8</color>
+    <color name="truco_surface">#FFFFFF</color>
+    <color name="truco_tonal">#F0EEEA</color>
+    <color name="truco_line">#E4E1DB</color>
+    <color name="truco_outline">#8A867F</color>
+    <color name="truco_ink">#1A1917</color>
+    <color name="truco_ink_variant">#6B6760</color>
+    <color name="truco_accent">#B3261E</color>
+    <color name="truco_on_accent">#FFFFFF</color>
+    <color name="truco_accent_soft">#FBE9E6</color>
+    <color name="truco_on_accent_soft">#7A1A14</color>
+    <!-- Destaque usado sobre a superfície invertida (Snackbar) -->
+    <color name="truco_accent_inverse">#FF8A7A</color>
 </resources>

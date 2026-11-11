@@ -1,8 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema único: as cores mudam sozinhas em values-night/colors.xml -->
     <style name="Base.Theme.ContadorTruco" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:colorBackground">@color/truco_background</item>
+
+        <item name="colorSurface">@color/truco_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/truco_surface</item>
+        <item name="colorOnSurface">@color/truco_ink</item>
+        <item name="colorOnSurfaceVariant">@color/truco_ink_variant</item>
+        <item name="colorOutline">@color/truco_outline</item>
+        <item name="colorOutlineVariant">@color/truco_line</item>
+
+        <item name="colorPrimary">@color/truco_accent</item>
+        <item name="colorOnPrimary">@color/truco_on_accent</item>
+        <item name="colorPrimaryContainer">@color/truco_accent_soft</item>
+        <item name="colorOnPrimaryContainer">@color/truco_on_accent_soft</item>
+
+        <item name="colorSecondaryContainer">@color/truco_tonal</item>
+        <item name="colorOnSecondaryContainer">@color/truco_ink</item>
+
+        <!-- Snackbar -->
+        <item name="colorSurfaceInverse">@color/truco_ink</item>
+        <item name="colorOnSurfaceInverse">@color/truco_background</item>
+        <item name="colorPrimaryInverse">@color/truco_accent_inverse</item>
+
+        <item name="materialCardViewStyle">@style/Widget.Truco.Card</item>
+        <item name="textInputStyle">@style/Widget.Truco.TextInput</item>
     </style>
 
     <style name="Theme.ContadorTruco" parent="Base.Theme.ContadorTruco" />
