@@ -1,242 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Retrato: cabeçalho, dois cartões empilhados e barra de ações embaixo. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:keepScreenOn="true"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/tv_nome1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/player1_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tv_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="0"
-        tools:text="XX"
-        app:layout_constraintStart_toEndOf="@+id/tv_nome1"
-        app:layout_constraintTop_toTopOf="@+id/tv_nome1" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp">
 
-    <!-- Botões Jogador 1 (Corrente Horizontal) -->
-    <Button
-        android:id="@+id/btn_sum1player1"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/plus_1"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum3player1"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome1" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:accessibilityHeading="true"
+                android:text="@string/main_title"
+                android:textAppearance="@style/TextAppearance.Truco.Title" />
 
-    <Button
-        android:id="@+id/btn_sum3player1"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#000000"
-        android:text="@string/plus_3"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum6player1"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum1player1"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome1" />
+            <TextView
+                android:id="@+id/tv_meta"
+                style="@style/Widget.Truco.Chip.Accent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:textSize="13sp"
+                tools:text="Até 12 pontos" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_sum6player1"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/plus_6"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum9player1"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum3player1"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome1" />
+        <include
+            android:id="@+id/player1"
+            layout="@layout/item_player"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/btn_sum9player1"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#000000"
-        android:text="@string/plus_9"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum12player1"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum6player1"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome1" />
+        <include
+            android:id="@+id/player2"
+            layout="@layout/item_player"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/btn_sum12player1"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/plus_12"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum9player1"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome1" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_nome2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/player2_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_sum1player1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_histJogadas"
+                style="@style/Widget.Truco.Button.Action"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_weight="1"
+                android:text="@string/btn_hist_jogadas"
+                app:icon="@drawable/ic_history" />
 
-    <TextView
-        android:id="@+id/tv_result2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="0"
-        tools:text="XX"
-        app:layout_constraintStart_toEndOf="@+id/tv_nome2"
-        app:layout_constraintTop_toTopOf="@+id/tv_nome2" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_infNomes"
+                style="@style/Widget.Truco.Button.Action"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/btn_inf_nomes"
+                app:icon="@drawable/ic_edit" />
 
-    <!-- Botões Jogador 2 (Corrente Horizontal) -->
-    <Button
-        android:id="@+id/btn_sum1player2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/plus_1"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum3player2"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome2" />
-
-    <Button
-        android:id="@+id/btn_sum3player2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#000000"
-        android:text="@string/plus_3"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum6player2"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum1player2"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome2" />
-
-    <Button
-        android:id="@+id/btn_sum6player2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/plus_6"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum9player2"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum3player2"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome2" />
-
-    <Button
-        android:id="@+id/btn_sum9player2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:backgroundTint="#000000"
-        android:text="@string/plus_9"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sum12player2"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum6player2"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome2" />
-
-    <Button
-        android:id="@+id/btn_sum12player2"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/plus_12"
-        android:textSize="12sp"
-        app:cornerRadius="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_sum9player2"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nome2" />
-
-    <Button
-        android:id="@+id/btn_histJogadas"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/btn_hist_jogadas"
-        android:textColorLink="#BA2828"
-        app:cornerRadius="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_sum1player2"
-        app:rippleColor="#D72727" />
-
-    <Button
-        android:id="@+id/btn_zerarHistorico"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#000000"
-        android:text="@string/btn_zerar_historico"
-        app:cornerRadius="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_histJogadas" />
-
-    <Button
-        android:id="@+id/btn_infNomes"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#970F0F"
-        android:text="@string/btn_inf_nomes"
-        app:cornerRadius="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_zerarHistorico" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_zerarHistorico"
+                style="@style/Widget.Truco.Button.Action.Destructive"
+                android:layout_width="0dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/btn_zerar_historico"
+                app:icon="@drawable/ic_delete" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -2,6 +2,8 @@ package be.edu.utfpr.contadortruco
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import be.edu.utfpr.contadortruco.databinding.ActivityMainBinding
+import be.edu.utfpr.contadortruco.databinding.ItemPlayerBinding
+import com.google.android.material.color.MaterialColors
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             if (!novoNome2.isNullOrBlank()) {
                 nomeJogador2 = novoNome2
             }
-            atualizarExibicaoNomes()
+            atualizarPlacares()
         }
     }
 
@@ -76,8 +80,8 @@ class MainActivity : AppCompatActivity() {
             nomeJogador2 = getString(R.string.player2_default_name)
         }
 
+        binding.tvMeta.text = getString(R.string.goal_chip, Constants.PONTOS_PARA_VENCER)
         configurarBotoes()
-        atualizarExibicaoNomes()
         atualizarPlacares()
     }
 
@@ -91,18 +95,17 @@ class MainActivity : AppCompatActivity() {
         outState.putString(KEY_NOME_2, nomeJogador2)
     }
 
-    private fun configurarBotoes() {
-        binding.btnSum1player1.setOnClickListener { adicionarPontos(1, 1) }
-        binding.btnSum3player1.setOnClickListener { adicionarPontos(1, 3) }
-        binding.btnSum6player1.setOnClickListener { adicionarPontos(1, 6) }
-        binding.btnSum9player1.setOnClickListener { adicionarPontos(1, 9) }
-        binding.btnSum12player1.setOnClickListener { adicionarPontos(1, 12) }
+    private fun botoesDePontos(card: ItemPlayerBinding) = listOf(
+        card.btnSum1 to 1,
+        card.btnSum3 to 3,
+        card.btnSum6 to 6,
+        card.btnSum9 to 9,
+        card.btnSum12 to 12
+    )
 
-        binding.btnSum1player2.setOnClickListener { adicionarPontos(2, 1) }
-        binding.btnSum3player2.setOnClickListener { adicionarPontos(2, 3) }
-        binding.btnSum6player2.setOnClickListener { adicionarPontos(2, 6) }
-        binding.btnSum9player2.setOnClickListener { adicionarPontos(2, 9) }
-        binding.btnSum12player2.setOnClickListener { adicionarPontos(2, 12) }
+    private fun configurarBotoes() {
+        configurarJogador(binding.player1, 1)
+        configurarJogador(binding.player2, 2)
 
         binding.btnHistJogadas.setOnClickListener {
             abrirHistorico()
@@ -117,10 +120,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun configurarJogador(card: ItemPlayerBinding, jogador: Int) {
+        botoesDePontos(card).forEach { (botao, pontos) ->
+            botao.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                adicionarPontos(jogador, pontos)
+            }
+        }
+    }
+
     private fun abrirHistorico() {
         val intent = Intent(this, HistoricoActivity::class.java).apply {
-            putExtra(Constants.EXTRA_NOME_JOGADOR_1, getString(R.string.player_name_format, nomeJogador1))
-            putExtra(Constants.EXTRA_NOME_JOGADOR_2, getString(R.string.player_name_format, nomeJogador2))
+            putExtra(Constants.EXTRA_NOME_JOGADOR_1, nomeJogador1)
+            putExtra(Constants.EXTRA_NOME_JOGADOR_2, nomeJogador2)
             putExtra(Constants.EXTRA_VITORIAS_JOGADOR_1, vitoriasJogador1)
             putExtra(Constants.EXTRA_VITORIAS_JOGADOR_2, vitoriasJogador2)
         }
@@ -144,12 +156,13 @@ class MainActivity : AppCompatActivity() {
 
         verificarVencedor()
         atualizarPlacares()
+        pulsar(if (jogador == 1) binding.player1.tvPontos else binding.player2.tvPontos)
     }
 
     private fun verificarVencedor() {
         when {
-            pontosJogador1 >= 12 -> encerrarPartida(1)
-            pontosJogador2 >= 12 -> encerrarPartida(2)
+            pontosJogador1 >= Constants.PONTOS_PARA_VENCER -> encerrarPartida(1)
+            pontosJogador2 >= Constants.PONTOS_PARA_VENCER -> encerrarPartida(2)
         }
     }
 
@@ -176,14 +189,50 @@ class MainActivity : AppCompatActivity() {
         pontosJogador2 = 0
     }
 
-    private fun atualizarExibicaoNomes() {
-        binding.tvNome1.text = getString(R.string.player_name_format, nomeJogador1)
-        binding.tvNome2.text = getString(R.string.player_name_format, nomeJogador2)
+    private fun atualizarPlacares() {
+        atualizarCard(binding.player1, nomeJogador1, pontosJogador1, vitoriasJogador1, pontosJogador1 > pontosJogador2)
+        atualizarCard(binding.player2, nomeJogador2, pontosJogador2, vitoriasJogador2, pontosJogador2 > pontosJogador1)
     }
 
-    private fun atualizarPlacares() {
-        binding.tvResult.text = pontosJogador1.toString()
-        binding.tvResult2.text = pontosJogador2.toString()
+    private fun atualizarCard(
+        card: ItemPlayerBinding,
+        nome: String,
+        pontos: Int,
+        vitorias: Int,
+        lider: Boolean
+    ) {
+        card.tvNome.text = nome
+        card.tvVitorias.text = textoVitorias(vitorias)
+        card.tvPontos.text = pontos.toString()
+        card.tvPontos.contentDescription = getString(R.string.cd_player_score, nome, textoPontos(pontos))
+        card.progresso.setProgressCompat(pontos.coerceAtMost(Constants.PONTOS_PARA_VENCER), true)
+
+        // Quem está na frente ganha a borda de destaque; empate não destaca ninguém.
+        val atributoBorda = if (lider) {
+            androidx.appcompat.R.attr.colorPrimary
+        } else {
+            com.google.android.material.R.attr.colorOutlineVariant
+        }
+        card.root.strokeColor = MaterialColors.getColor(card.root, atributoBorda)
+
+        botoesDePontos(card).forEach { (botao, valor) ->
+            botao.contentDescription = getString(R.string.cd_add_points, textoPontos(valor), nome)
+        }
+    }
+
+    private fun textoPontos(n: Int) =
+        getString(if (n == 1) R.string.points_one else R.string.points_many, n)
+
+    private fun textoVitorias(n: Int) =
+        getString(if (n == 1) R.string.wins_one else R.string.wins_many, n)
+
+    // Pequeno "pulso" no número para confirmar visualmente que o toque foi registrado.
+    private fun pulsar(v: View) {
+        v.pivotX = 0f
+        v.pivotY = v.height / 2f
+        v.animate().scaleX(1.05f).scaleY(1.05f).setDuration(90).withEndAction {
+            v.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
+        }.start()
     }
 
     private fun zerarHistorico() {
@@ -195,7 +244,6 @@ class MainActivity : AppCompatActivity() {
         nomeJogador1 = getString(R.string.player1_default_name)
         nomeJogador2 = getString(R.string.player2_default_name)
 
-        atualizarExibicaoNomes()
         atualizarPlacares()
 
         Toast.makeText(
