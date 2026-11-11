@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paisagem: ações no cabeçalho e os dois cartões lado a lado. Mesmos ids do retrato. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:accessibilityHeading="true"
+                android:text="@string/main_title"
+                android:textAppearance="@style/TextAppearance.Truco.Title" />
+
+            <TextView
+                android:id="@+id/tv_meta"
+                style="@style/Widget.Truco.Chip.Accent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:textSize="13sp"
+                tools:text="Até 12 pontos" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_desfazer"
+                style="@style/Widget.Truco.Button.Icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/cd_undo"
+                android:tooltipText="@string/cd_undo"
+                app:icon="@drawable/ic_undo" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_histJogadas"
+                style="@style/Widget.Truco.Button.Compact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_hist_jogadas"
+                app:icon="@drawable/ic_history" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_infNomes"
+                style="@style/Widget.Truco.Button.Compact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_inf_nomes"
+                app:icon="@drawable/ic_edit" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_zerarHistorico"
+                style="@style/Widget.Truco.Button.Compact.Destructive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_zerar_historico"
+                app:icon="@drawable/ic_delete" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/player1"
+                layout="@layout/item_player"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <include
+                android:id="@+id/player2"
+                layout="@layout/item_player"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

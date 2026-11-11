@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cartão de vitórias de um jogador na tela de histórico. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_nome"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.Truco.Name"
+                tools:text="Jogador 1" />
+
+            <TextView
+                android:id="@+id/chip_lider"
+                style="@style/Widget.Truco.Chip.Accent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                app:drawableStartCompat="@drawable/ic_trophy"
+                android:text="@string/history_leading"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_vitorias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:includeFontPadding="false"
+            android:textAppearance="@style/TextAppearance.Truco.Wins"
+            tools:text="5" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progresso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
+            app:trackColor="?attr/colorSecondaryContainer"
+            app:trackCornerRadius="3dp"
+            app:trackThickness="6dp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

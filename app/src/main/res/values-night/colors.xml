@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="truco_background">#121110</color>
+    <color name="truco_surface">#1C1B19</color>
+    <color name="truco_tonal">#292724</color>
+    <color name="truco_line">#35332F</color>
+    <color name="truco_outline">#7C776F</color>
+    <color name="truco_ink">#F2EFEA</color>
+    <color name="truco_ink_variant">#A39E96</color>
+    <color name="truco_accent">#FF8A7A</color>
+    <color name="truco_on_accent">#3A0A05</color>
+    <color name="truco_accent_soft">#4A1D18</color>
+    <color name="truco_on_accent_soft">#FFDAD4</color>
+    <color name="truco_accent_inverse">#B3261E</color>
+</resources>
